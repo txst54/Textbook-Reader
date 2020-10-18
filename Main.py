@@ -1,22 +1,30 @@
 import torch
-import json
 from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 from tkinter import *
-from tkinter.ttk import *
 from tkinter.filedialog import askopenfilename
 import pytesseract
 import cv2
 from PIL import ImageTk, Image
-from threading import *
-import queue
-from time import sleep
+import tkinter.font as tkFont
 
+btn_params = {
+    'padx': 16,
+    'pady': 1,
+    'bd': 4,
+    'fg': 'white',
+    'bg': '#2E76CF',
+    'font': ('arial', 14),
+    'relief': 'flat',
+    'activebackground': "#173b67"
+}
 root = Tk()
 root.title("Page Summarizer")
-frame = Frame(root)
+photo = PhotoImage(file="TextbookIcon.png")
+root.iconphoto(False, photo)
+frame = Frame(root, bd=4, relief='flat', bg='#3c3f41')
 canvas = Canvas(frame)
 scrollbar = Scrollbar(frame, orient="vertical", command=canvas.yview)
-scrollable_frame = Frame(canvas)
+scrollable_frame = Frame(canvas, bg="#3c3f41")
 scrollable_frame.bind(
     "<Configure>",
     lambda e: canvas.configure(
@@ -25,7 +33,7 @@ scrollable_frame.bind(
 )
 canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
-canvas.configure(yscrollcommand=scrollbar.set, width=720, height=720)
+canvas.configure(yscrollcommand=scrollbar.set, width=720, height=720, bg="#3c3f41")
 frame.pack()
 canvas.pack(side="left", fill="both", expand=True)
 scrollbar.pack(side="right", fill="y")
@@ -106,18 +114,20 @@ def Main():
     SummarizeDisplay.delete(1.0, END)
     SummarizeDisplay.insert(END, ZaOutput)
 
-Upload = Button(scrollable_frame, text="Upload Image", command=upload)
+
+Arial = tkFont.Font(family="Arial", size=12)
+Upload = Button(scrollable_frame, **btn_params, text="Upload Image", command=upload)
 Upload.pack(side=TOP, pady=10)
-SummarizeDisplay = Text(scrollable_frame, height=10, width=90)
+SummarizeDisplay = Text(scrollable_frame, font=Arial, bg="#282a36", fg="#f8f8f2", insertbackground="white", height=10, width=80)
 SummarizeDisplay.insert(END, "")
-SummarizeDisplay.pack(side=BOTTOM, pady=10)
-Summarize = Button(scrollable_frame, text="Summarize", command=Main)
+SummarizeDisplay.pack(side=BOTTOM, pady=10, padx=10)
+Summarize = Button(scrollable_frame, **btn_params, text="Summarize", command=Main)
 Summarize.pack(side=BOTTOM, pady=10)
-Save = Button(scrollable_frame, text="Save Text", command=Savetext)
+Save = Button(scrollable_frame, **btn_params, text="Save Text", command=Savetext)
 Save.pack(side=BOTTOM, pady=10)
-Display = Text(scrollable_frame, height=10, width=90)
+Display = Text(scrollable_frame, font=Arial,  bg="#282a36", fg="#f8f8f2", insertbackground="white", height=10, width=80)
 Display.insert(END, "")
-Display.pack(side=BOTTOM, pady=10)
-Scan = Button(scrollable_frame, text="Scan Image", command=lambda: readPoints(filename))
+Display.pack(side=BOTTOM, pady=10, padx=10)
+Scan = Button(scrollable_frame, **btn_params, text="Scan Image", command=lambda: readPoints(filename))
 Scan.pack(side=BOTTOM, pady=10)
 root.mainloop()
